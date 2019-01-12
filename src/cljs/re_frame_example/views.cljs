@@ -4,6 +4,10 @@
    [re-frame-example.subs :as subs]
    ))
 
+;;; helpers
+(def <sub (comp deref re-frame/subscribe))
+(def >evt re-frame/dispatch)
+
 ;;; view を定義します
 ;;; 通常 view は、
 ;;;  1. ユーザーとのインタラクションによるイベントの dispatch
@@ -27,34 +31,34 @@
 (defn todo-component [todo]
   [:div
    [:span [:input {:type "radio"
-                   :on-click #(re-frame.core/dispatch [:done-todo todo])}]]
+                   :on-click #(>evt [:done-todo todo])}]]
    [:span (:title todo)]
    [:span [:input {:type "button"
                    :value "X"
-                   :on-click #(re-frame.core/dispatch [:delete-todo todo])}]]])
+                   :on-click #(>evt [:delete-todo todo])}]]])
 
 (defn todo-list-component []
-  (let [todos (re-frame/subscribe [::subs/todos])]
+  (let [todos (<sub [::subs/todos])]
     [:div
      [:ul
-      (for [todo @todos]
+      (for [todo todos]
         ^{:key todo} [:li [todo-component todo]])]]))
 
 (defn todo-stats-component []
-  (let [todos (re-frame/subscribe [::subs/todos])]
-    [:div (count @todos) " item left"]))
+  (let [todos (<sub [::subs/todos])]
+    [:div (count todos) " item left"]))
 
 (defn todo-filter-component []
   [:div
    [:input {:type  "button"
             :value "All"
-            :on-click #(re-frame.core/dispatch [:filter-todo :all])}]
+            :on-click #(>evt [:filter-todo :all])}]
    [:input {:type  "button"
             :value "Active"
-            :on-click #(re-frame.core/dispatch [:filter-todo :active])}]
+            :on-click #(>evt [:filter-todo :active])}]
    [:input {:type  "button"
             :value "Completed"
-            :on-click #(re-frame.core/dispatch [:filter-todo :completed])}]])
+            :on-click #(>evt [:filter-todo :completed])}]])
 
 (defn footer-component []
   [:div
