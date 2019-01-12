@@ -4,6 +4,9 @@
    [re-frame-example.db :as db]
    ))
 
+;;; event handler を登録します (domino 2)
+;;; event handler は coeffect と event を受け取って、 app-db を更新します
+
 (re-frame/reg-event-db
  ::initialize-db
  (fn [_ _]
@@ -20,6 +23,8 @@
 
 (defn done-todo [coeffects [_ todo]])
 
+;;; event handler は絶対に pure であるべきなので、 event に反応して別の event を起こしたいときは、
+;;; reg-cofx を使って、 あらかじめ定義しておいた(副作用のある)関数を呼び出すためのデータを effect として返します
 (re-frame/reg-event-fx
   :filter-todo
   filter-todos)

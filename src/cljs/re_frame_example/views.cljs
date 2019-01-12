@@ -4,10 +4,21 @@
    [re-frame-example.subs :as subs]
    ))
 
+;;; view を定義します
+;;; 通常 view は、
+;;;  1. ユーザーとのインタラクションによるイベントの dispatch
+;;;  2. event handling の結果としておきる app-db への subscribe
+;;; を行います
+;;; view は reagent の component を返します
+
 (defn greetings []
   (let [name (re-frame/subscribe [::subs/name])]
     [:div
      [:h1 "Bye from " @name]]))
+
+;;; view は input に対していかなる計算もすべきではない (just compute hiccup!!)
+;;; keep views as simple as possible.
+
 
 (defn todo-input []
   [:input {:type "text"
